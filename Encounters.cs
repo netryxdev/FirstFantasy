@@ -72,6 +72,10 @@ namespace FirstFantasy
                         Console.WriteLine($"{Game.player.Name} usa uma poção!");
                         // Logica adicional
                         break;
+
+                    default:
+                        Console.WriteLine(Generic.inputIsNullOrEmptyCommand(input));
+                        break;
                 }
             }
 

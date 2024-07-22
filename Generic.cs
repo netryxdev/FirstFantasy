@@ -4,7 +4,7 @@ namespace FirstFantasy
 {
     public class Generic
     {
-        public static string inputIsNullOrEmptyInBattle(string input)
+        public static string inputIsNullOrEmptyCommand(string input)
         {
             if(string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
             {
