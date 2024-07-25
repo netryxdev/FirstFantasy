@@ -9,15 +9,12 @@ namespace FirstFantasy
     public class Player
     {
         public string Name { get; set; } = "";
-        public int Health = 10;
-        public int Coins = 0;
-        public int Damage = 1;
-        public int ArmorValue = 0;
-        public int potion = 5;
-
-        //public Player(string name)
-        //{
-        //    Name = name;
-        //}
+        public int Health { get; set; } = 10;
+        public int Coins { get; set; } = 0;
+        public int Damage { get; set; } = 1;
+        public int ArmorValue { get; set; } = 0;
+        public int PotionsCount { get; set; } = 5;
+        public int PotionHealValue { get; set; } = 2;
+        public int WeaponValue { get; set; } = 1;
     }
 }

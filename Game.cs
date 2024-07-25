@@ -4,6 +4,8 @@ using System.Text;
 using System.IO;
 using System.Text.Json;
 using System.Numerics;
+using Spectre.Console;
+using System.Xml.Linq;
 
 namespace FirstFantasy
 {
@@ -20,9 +22,9 @@ namespace FirstFantasy
             }
             else
             {
-                Console.WriteLine("---------------------");
-                Console.WriteLine("| FirstFantasy v0.1! |");
-                Console.WriteLine("---------------------");
+                AnsiConsole.MarkupLine("[bold yellow]=======================[/]");
+                AnsiConsole.MarkupLine("|  FirstFantasy v0.1! |");
+                AnsiConsole.MarkupLine("[bold yellow]=======================[/]");
                 Console.WriteLine(" ");
                 Console.WriteLine("Vamos iniciar a aventura! Digite seu nome: ");
                 player.Name = Console.ReadLine() ?? string.Empty;
@@ -48,6 +50,8 @@ namespace FirstFantasy
                 Console.Clear();
                 Console.WriteLine("Você acorda num lugar escuro, não lembra como chegou aqui...");
                 Console.WriteLine("Há uma porta na sua frente");
+                Encounters.FirstEncounter();
+                AnsiConsole.MarkupLine($"[bold green]Fim da batalha![/]");
             }
         }
 
