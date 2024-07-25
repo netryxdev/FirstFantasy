@@ -19,11 +19,11 @@ namespace FirstFantasy
         // Encontro de buff/debuff
 
         // Encontro de batalha
-        public static void Combat(bool random, string eName, int ePower, int eHealth)
+        public static void Combat(bool random, string enemyName, int enemyPower, int enemyHealth)
         {
-            string n = "";
-            int p = 0;
-            int h = 0;
+            string eName = "";
+            int ePower = 0;
+            int eHealth = 0;
 
             if (random)
             {
@@ -31,24 +31,25 @@ namespace FirstFantasy
             }
             else
             {
-                // 'e' is the enemy Variables
-                n = eName;
-                p = ePower;
-                h = eHealth;
+                eName = enemyName;
+                ePower = enemyPower;
+                eHealth = enemyHealth;
             }
 
             int eDamage = 0;
             int pAtk = 0;
             bool runSuccessful = false;
 
-            while (eHealth > 0)
+            while (h > 0)
             {
+                Console.Clear();
+                AnsiConsole.MarkupLine($"Sua Vida: [green]{Game.player.Health}[/]; Poções: [cyan]{Game.player.PotionsCount}[/]");
+                AnsiConsole.MarkupLine($"[bold red]{eName}: Vida: {h} / Dano: {p}[/]");
+
                 AnsiConsole.MarkupLine("[bold yellow]=========================[/]");
                 AnsiConsole.MarkupLine("[bold yellow]|  (A)tacar  (D)efender |[/]");
                 AnsiConsole.MarkupLine("[bold yellow]|  (F)ugir   (C)ura     |[/]");
                 AnsiConsole.MarkupLine("[bold yellow]=========================[/]");
-                AnsiConsole.MarkupLine($"Sua Vida: [green]{Game.player.Health}[/]; Poções: [cyan]{Game.player.PotionsCount}[/]");
-                AnsiConsole.MarkupLine($"[bold red]Vida de {eName}: {h}[/]");
 
                 string input = Console.ReadLine()?.ToLower() ?? "";
 
@@ -59,13 +60,13 @@ namespace FirstFantasy
                         AnsiConsole.MarkupLine($"[bold red]{Game.player.Name} ataca {eName}![/]");
 
                         // Logica de dano ao atacar
-                        eDamage = p - Game.player.ArmorValue;
+                        eDamage = ePower - Game.player.ArmorValue;
                         eDamage = eDamage < 0 ? 0 : eDamage; 
                         pAtk = rand.Next(1, Game.player.WeaponValue) + rand.Next(1, Game.player.Damage);
                         Game.player.Health -= eDamage;
-                        h -= pAtk;
+                        enemyHealth -= pAtk;
                         AnsiConsole.MarkupLine($"Você causou [bold blue]{pAtk} de dano[/] ao inimigo e " +
-                            $"recebeu [bold red]{eDamage} de dano de {n}[/]");
+                            $"recebeu [bold red]{eDamage} de dano de {eName}[/]");
 
                         // Lógica adicional
                         break;
@@ -74,12 +75,12 @@ namespace FirstFantasy
                     case "defender":
                         AnsiConsole.MarkupLine($"[bold blue]{Game.player.Name} se defende![/]");
 
-                        eDamage = (p/2) - Game.player.ArmorValue;
+                        eDamage = (ePower/2) - Game.player.ArmorValue;
                         eDamage = eDamage < 0 ? 0 : eDamage;
                         pAtk = (rand.Next(0, Game.player.WeaponValue) + rand.Next(1, Game.player.Damage))/2;
 
                         Game.player.Health -= eDamage;
-                        h -= pAtk;
+                        enemyHealth -= pAtk;
                         AnsiConsole.MarkupLine($"Você recebeu {eDamage} de dano!");
 
                         // Lógica adicional
@@ -92,9 +93,9 @@ namespace FirstFantasy
                         if(rand.Next(0, 2) == 0)
                         {
                             AnsiConsole.MarkupLine($"[bold yellow]{Game.player.Name} Não consegue fugir![/]");
-                            eDamage = p - Game.player.ArmorValue;
+                            eDamage = enemyPower - Game.player.ArmorValue;
                             eDamage = eDamage < 0 ? 0 : eDamage;
-                            AnsiConsole.MarkupLine($"[bold pink]Você recebeu {eDamage} de dano de {n}![/]");;
+                            AnsiConsole.MarkupLine($"[bold pink]Você recebeu {eDamage} de dano de {enemyName}![/]");;
                             continue;
                         }
 
@@ -111,8 +112,8 @@ namespace FirstFantasy
                         if(Game.player.PotionsCount == 0)
                         {
                             AnsiConsole.MarkupLine($"[bold yeallow] Você está sem pocões no momento.");
-                            AnsiConsole.MarkupLine($"{n} Ataca e você recebe {eDamage} de dano!");
-                            eDamage = p - Game.player.ArmorValue;
+                            AnsiConsole.MarkupLine($"{enemyName} Ataca e você recebe {eDamage} de dano!");
+                            eDamage = enemyPower - Game.player.ArmorValue;
                             eDamage = eDamage < 0 ? 0 : eDamage;
                             continue;
                         }
@@ -131,7 +132,7 @@ namespace FirstFantasy
 
                 if(Game.player.Health <= 0) 
                 {
-                    AnsiConsole.MarkupLine($"Você foi derrotado por [bold red]{n}... :([/]");
+                    AnsiConsole.MarkupLine($"Você foi derrotado por [bold red]{enemyName}... :([/]");
                 }
 
                 if (runSuccessful)
