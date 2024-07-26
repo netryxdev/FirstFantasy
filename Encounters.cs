@@ -11,7 +11,7 @@ namespace FirstFantasy
         {
             AnsiConsole.MarkupLine("[bold yellow]Você se depara com uma porta e decide abrir ela[/]");
             Console.WriteLine("Inimigo aparece...");
-            Combat(false, "Besta fera", 3, 6);
+            Combat(false, "Besta fera", 1, 5);
         }
 
         // Encontros
@@ -19,10 +19,10 @@ namespace FirstFantasy
         // Encontro de buff/debuff
 
         // Encontro de batalha
-        public static void Combat(bool random, string enemyName, int enemyPower, int enemyHealth)
+        public static void Combat(bool random, string enemyName, int enemyAtk, int enemyHp)
         {
             string eName = "";
-            int ePower = 0;
+            int eAtk = 0;
             int eHealth = 0;
 
             if (random)
@@ -32,19 +32,18 @@ namespace FirstFantasy
             else
             {
                 eName = enemyName;
-                ePower = enemyPower;
-                eHealth = enemyHealth;
+                eAtk = enemyAtk;
+                eHealth = enemyHp;
             }
 
             int eDamage = 0;
-            int pAtk = 0;
+            int playerDamage = 0;
             bool runSuccessful = false;
 
-            while (h > 0)
+            while (eHealth > 0)
             {
-                Console.Clear();
-                AnsiConsole.MarkupLine($"Sua Vida: [green]{Game.player.Health}[/]; Poções: [cyan]{Game.player.PotionsCount}[/]");
-                AnsiConsole.MarkupLine($"[bold red]{eName}: Vida: {h} / Dano: {p}[/]");
+                AnsiConsole.MarkupLine($"Sua Vida: [green]{Game.player.Hp}[/]; Poções: [cyan]{Game.player.PotionsCount}[/]");
+                AnsiConsole.MarkupLine($"[bold red]{eName}: Vida: {eHealth} / Dano: {eAtk}[/]");
 
                 AnsiConsole.MarkupLine("[bold yellow]=========================[/]");
                 AnsiConsole.MarkupLine("[bold yellow]|  (A)tacar  (D)efender |[/]");
@@ -57,82 +56,80 @@ namespace FirstFantasy
                 {
                     case "a":
                     case "atacar":
+                        Console.Clear();
                         AnsiConsole.MarkupLine($"[bold red]{Game.player.Name} ataca {eName}![/]");
 
-                        // Logica de dano ao atacar
-                        eDamage = ePower - Game.player.ArmorValue;
-                        eDamage = eDamage < 0 ? 0 : eDamage; 
-                        pAtk = rand.Next(1, Game.player.WeaponValue) + rand.Next(1, Game.player.Damage);
-                        Game.player.Health -= eDamage;
-                        enemyHealth -= pAtk;
-                        AnsiConsole.MarkupLine($"Você causou [bold blue]{pAtk} de dano[/] ao inimigo e " +
-                            $"recebeu [bold red]{eDamage} de dano de {eName}[/]");
+                        // Atk do player
+                        playerDamage = BattleActions.PlayerAttack();
+                        enemyHp -= playerDamage;
 
-                        // Lógica adicional
+                        //Atk do inimigo
+                        eDamage = BattleActions.EnemyAttack(eAtk);
+
+                        AnsiConsole.MarkupLine($"Você causou [bold blue]{playerDamage} de dano[/] a {eName} e " +
+                        $"recebeu [bold red]{eDamage} de dano de {eName}[/]");
+                        Console.WriteLine("");
                         break;
 
                     case "d":
                     case "defender":
+                        Console.Clear();
                         AnsiConsole.MarkupLine($"[bold blue]{Game.player.Name} se defende![/]");
 
-                        eDamage = (ePower/2) - Game.player.ArmorValue;
-                        eDamage = eDamage < 0 ? 0 : eDamage;
-                        pAtk = (rand.Next(0, Game.player.WeaponValue) + rand.Next(1, Game.player.Damage))/2;
+                        eDamage = BattleActions.DefendFromEnemyAttack(enemyAtk);
+                        playerDamage = BattleActions.DefendFromPlayerAttack();
 
-                        Game.player.Health -= eDamage;
-                        enemyHealth -= pAtk;
+                        enemyHp -= playerDamage;
                         AnsiConsole.MarkupLine($"Você recebeu {eDamage} de dano!");
 
-                        // Lógica adicional
+                        Console.WriteLine("");
                         break;
 
                     case "f":
                     case "fugir":
+                        Console.Clear();
                         AnsiConsole.MarkupLine($"[bold yellow]{Game.player.Name} tenta fugir![/]");
 
                         if(rand.Next(0, 2) == 0)
                         {
                             AnsiConsole.MarkupLine($"[bold yellow]{Game.player.Name} Não consegue fugir![/]");
-                            eDamage = enemyPower - Game.player.ArmorValue;
-                            eDamage = eDamage < 0 ? 0 : eDamage;
+                            eDamage = BattleActions.EnemyAttack(enemyAtk);
                             AnsiConsole.MarkupLine($"[bold pink]Você recebeu {eDamage} de dano de {enemyName}![/]");;
-                            continue;
+                            break;
                         }
 
                         AnsiConsole.MarkupLine($"[bold purple]{Game.player.Name} consegue fugir![/]");
                         runSuccessful = true;
                         Console.ReadKey();
 
+                        Console.WriteLine("");
                         // go to store
                         break;
 
                     case "c":
                     case "cura":
+                        Console.Clear();
                         AnsiConsole.MarkupLine($"[bold green]{Game.player.Name} usa uma poção![/]");
                         if(Game.player.PotionsCount == 0)
                         {
-                            AnsiConsole.MarkupLine($"[bold yeallow] Você está sem pocões no momento.");
-                            AnsiConsole.MarkupLine($"{enemyName} Ataca e você recebe {eDamage} de dano!");
-                            eDamage = enemyPower - Game.player.ArmorValue;
-                            eDamage = eDamage < 0 ? 0 : eDamage;
-                            continue;
+                            eDamage = BattleActions.EnemyAttack(enemyAtk);
+                            BattleActions.PlayerWithoutPotion(eName, eDamage);
+                            break;
                         }
 
-                        AnsiConsole.MarkupLine($"Você pega uma poção da sua bolsa e toma ela.");
-                        Game.player.Health += Game.player.PotionHealValue;
-                        AnsiConsole.MarkupLine($"Você recuperou {Game.player.PotionHealValue}.");
-                        Game.player.PotionsCount--;
-                        // Lógica adicional
+                        BattleActions.PlayerUsesPotion();
+                        Console.WriteLine("");
                         break;
 
                     default:
-                        AnsiConsole.MarkupLine($"[bold red]Comando inválido: {input}. Tente novamente.[/]");
+                        AnsiConsole.MarkupLine($"[bold red]Comando inválido: {input}. Escolha um dos 4 comandos acima.[/]");
+                        Console.WriteLine("");
                         break;
                 }
 
-                if(Game.player.Health <= 0) 
+                if(Game.player.Hp <= 0) 
                 {
-                    AnsiConsole.MarkupLine($"Você foi derrotado por [bold red]{enemyName}... :([/]");
+                    CommonMessages.YouDiedMessage(enemyName);
                 }
 
                 if (runSuccessful)
@@ -140,13 +137,15 @@ namespace FirstFantasy
 
                 if (eHealth <= 0)
                 {
-                    AnsiConsole.MarkupLine($"[bold green]Você derrotou {eName}! Parabens e siga sua jornada![/]");
+                    CommonMessages.YouDefeatedEnemy(eName);
                     break;
                 }
             }
             if (eHealth <= 0)
             {
+                // Ajustar mensagem aqui futuramente para ganhar XP ou Itens!
                 AnsiConsole.MarkupLine($"[bold green]Você derrotou {eName}! Parabens e siga sua jornada![/]");
+                CommonMessages.ClearBattleMessagesAfterBattle();
             }
         }
     }
