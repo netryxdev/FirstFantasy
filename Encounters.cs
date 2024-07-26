@@ -61,7 +61,7 @@ namespace FirstFantasy
 
                         // Atk do player
                         playerDamage = BattleActions.PlayerAttack();
-                        enemyHp -= playerDamage;
+                        eHealth -= playerDamage;
 
                         //Atk do inimigo
                         eDamage = BattleActions.EnemyAttack(eAtk);
@@ -79,7 +79,7 @@ namespace FirstFantasy
                         eDamage = BattleActions.DefendFromEnemyAttack(enemyAtk);
                         playerDamage = BattleActions.DefendFromPlayerAttack();
 
-                        enemyHp -= playerDamage;
+                        eHealth -= playerDamage;
                         AnsiConsole.MarkupLine($"Você recebeu {eDamage} de dano!");
 
                         Console.WriteLine("");
@@ -134,17 +134,11 @@ namespace FirstFantasy
 
                 if (runSuccessful)
                     break;
-
-                if (eHealth <= 0)
-                {
-                    CommonMessages.YouDefeatedEnemy(eName);
-                    break;
-                }
             }
             if (eHealth <= 0)
             {
                 // Ajustar mensagem aqui futuramente para ganhar XP ou Itens!
-                AnsiConsole.MarkupLine($"[bold green]Você derrotou {eName}! Parabens e siga sua jornada![/]");
+                CommonMessages.YouDefeatedEnemy(eName);
                 CommonMessages.ClearBattleMessagesAfterBattle();
             }
         }
