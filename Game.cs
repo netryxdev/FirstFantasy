@@ -51,7 +51,7 @@ namespace FirstFantasy
                 Console.WriteLine("Você acorda num lugar escuro, não lembra como chegou aqui...");
                 Console.WriteLine("Há uma porta na sua frente");
                 Encounters.FirstEncounter();
-                AnsiConsole.MarkupLine($"[bold green]Fim da batalha![/]");
+                AnsiConsole.MarkupLine($"[bold green]Fim de jogo! E  por enquanto isso é tudo pessoal![/]");
             }
         }
 

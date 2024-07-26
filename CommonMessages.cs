@@ -27,6 +27,7 @@ namespace FirstFantasy
 
         public static void ClearBattleMessagesAfterBattle()
         {
+            AnsiConsole.MarkupLine($"[bold green]Fim da batalha![/]");
             Console.WriteLine("Aperte alguma tecla para prosseguir e limpar o texto do histórico de batalha...");
             Console.ReadKey();
             Console.Clear();
