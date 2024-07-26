@@ -11,7 +11,18 @@ namespace FirstFantasy
         {
             AnsiConsole.MarkupLine("[bold yellow]Você se depara com uma porta e decide abrir ela[/]");
             Console.WriteLine("Inimigo aparece...");
-            Combat(false, "Besta fera", 1, 5);
+            Enemy bestaFera = new Enemy
+            {
+                Name = "Besta fera",
+                MaxHp = 20,
+                Hp = 10,
+                Atk = 3,
+                ArmorValue = 1,
+                PotionsCount = 1,
+                PotionHealValue = 3
+            };
+
+            Combat(false, bestaFera);
         }
 
         // Encontros
@@ -19,7 +30,7 @@ namespace FirstFantasy
         // Encontro de buff/debuff
 
         // Encontro de batalha
-        public static void Combat(bool random, string enemyName, int enemyAtk, int enemyHp)
+        public static void Combat(bool random, Enemy e)
         {
             string eName = "";
             int eAtk = 0;
@@ -31,9 +42,9 @@ namespace FirstFantasy
             }
             else
             {
-                eName = enemyName;
-                eAtk = enemyAtk;
-                eHealth = enemyHp;
+                eName = e.Name;
+                eAtk = e.Atk;
+                eHealth = e.MaxHp;
             }
 
             int eDamage = 0;
@@ -43,7 +54,7 @@ namespace FirstFantasy
             while (eHealth > 0)
             {
                 AnsiConsole.MarkupLine($"Sua Vida: [green]{Game.player.Hp}[/]; Poções: [cyan]{Game.player.PotionsCount}[/]");
-                AnsiConsole.MarkupLine($"[bold red]{eName}: Vida: {eHealth} / Dano: {eAtk}[/]");
+                AnsiConsole.MarkupLine($"[bold red]{eName}: Vida: {eHealth} / Dano: {eAtk}[/]");// separar os status para liha de baixo
 
                 AnsiConsole.MarkupLine("[bold yellow]=========================[/]");
                 AnsiConsole.MarkupLine("[bold yellow]|  (A)tacar  (D)efender |[/]");
@@ -64,7 +75,7 @@ namespace FirstFantasy
                         eHealth -= playerDamage;
 
                         //Atk do inimigo
-                        eDamage = BattleActions.EnemyAttack(eAtk);
+                        eDamage = EnemyActions.EnemyAttack(eAtk);
 
                         AnsiConsole.MarkupLine($"Você causou [bold blue]{playerDamage} de dano[/] a {eName} e " +
                         $"recebeu [bold red]{eDamage} de dano de {eName}[/]");
@@ -76,8 +87,8 @@ namespace FirstFantasy
                         Console.Clear();
                         AnsiConsole.MarkupLine($"[bold blue]{Game.player.Name} se defende![/]");
 
-                        eDamage = BattleActions.DefendFromEnemyAttack(enemyAtk);
-                        playerDamage = BattleActions.DefendFromPlayerAttack();
+                        eDamage = BattleActions.DefendFromEnemyAttack(e.Atk);
+                        playerDamage = EnemyActions.DefendFromPlayerAttack();
 
                         eHealth -= playerDamage;
                         AnsiConsole.MarkupLine($"Você recebeu {eDamage} de dano!");
@@ -93,8 +104,8 @@ namespace FirstFantasy
                         if(rand.Next(0, 2) == 0)
                         {
                             AnsiConsole.MarkupLine($"[bold yellow]{Game.player.Name} Não consegue fugir![/]");
-                            eDamage = BattleActions.EnemyAttack(enemyAtk);
-                            AnsiConsole.MarkupLine($"[bold pink]Você recebeu {eDamage} de dano de {enemyName}![/]");;
+                            eDamage = EnemyActions.EnemyAttack(e.Atk);
+                            AnsiConsole.MarkupLine($"[bold pink]Você recebeu {eDamage} de dano de {e.Name}![/]");;
                             break;
                         }
 
@@ -112,7 +123,7 @@ namespace FirstFantasy
                         AnsiConsole.MarkupLine($"[bold green]{Game.player.Name} usa uma poção![/]");
                         if(Game.player.PotionsCount == 0)
                         {
-                            eDamage = BattleActions.EnemyAttack(enemyAtk);
+                            eDamage = EnemyActions.EnemyAttack(e.Atk);
                             BattleActions.PlayerWithoutPotion(eName, eDamage);
                             break;
                         }
@@ -129,7 +140,7 @@ namespace FirstFantasy
 
                 if(Game.player.Hp <= 0) 
                 {
-                    CommonMessages.YouDiedMessage(enemyName);
+                    CommonMessages.YouDiedMessage(e.Name);
                 }
 
                 if (runSuccessful)

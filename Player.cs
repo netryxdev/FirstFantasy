@@ -9,6 +9,7 @@ namespace FirstFantasy
     public class Player
     {
         public string Name { get; set; } = "";
+        public int MaxHp { get; set; } = 0;
         public int Hp { get; set; } = 10;
         public int Coins { get; set; } = 0;
         public int Atk { get; set; } = 1;
